@@ -1,0 +1,28 @@
+name: Persistent Poor Signal
+
+enabled: true
+
+description: >
+  Detects persistent poor LTE signal when RSRP remains
+  below -110 dBm and SINR remains below 0 dB for a
+  configurable number of consecutive measurements.
+
+parameters:
+
+  - RSRP
+
+  - SINR
+
+thresholds:
+
+  rsrp: -110
+
+  sinr: 0
+
+window_size: 3
+
+output:
+
+  anomaly_name: persistent_poor_signal
+
+severity: High
