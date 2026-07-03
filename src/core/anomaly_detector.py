@@ -52,7 +52,7 @@ class AnomalyDetector:
             triggered_rules.append("RULE-004")
 
             reasons.append(
-                f"RSSI is {row['RSSI']} dBm, which exceeds the acceptable threshold of -55 dBm, suggesting excessive radio interference."
+                f"RSSI is {row['RSSI']} dBm while SINR is only {row['SINR']} dB, indicating excessive radio interference."
             )
 
         # =====================================================
