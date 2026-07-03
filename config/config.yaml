@@ -2,10 +2,6 @@ input_file: data/input/telemetry.csv
 
 output_file: output/anomaly_report.csv
 
-rules:
-
-  persistent_poor_signal: true
-
 thresholds:
 
   rsrp:
@@ -14,6 +10,8 @@ thresholds:
   sinr:
     poor: 0
 
-window:
+  rsrq:
+    poor: -15
 
-  consecutive_readings: 3
+  rssi:
+    high: -50
