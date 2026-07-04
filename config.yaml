@@ -1,28 +1,54 @@
-name: Persistent Poor Signal
+name: Telecom Persistent Signal Engine
 
-enabled: true
+input_file: data/input/Telemetry_X_ATP_last7days_20260622.csv
 
-description: >
-  Detects persistent poor LTE signal when RSRP remains
-  below -110 dBm and SINR remains below 0 dB for a
-  configurable number of consecutive measurements.
+output_file: output/anomaly_report.csv
 
-parameters:
+rules:
 
-  - RSRP
+  weak_coverage:
+    enabled: true
+    threshold: -110
+    severity: High
+    anomaly_name: Weak Coverage Anomaly
 
-  - SINR
+  radio_interference:
+    enabled: true
+    threshold: 0
+    severity: High
+    anomaly_name: Radio Interference Anomaly
 
-thresholds:
+  poor_signal_quality:
+    enabled: true
+    threshold: -15
+    severity: Medium
+    anomaly_name: Poor Signal Quality Anomaly
 
-  rsrp: -110
+  radio_noise:
+    enabled: true
+    threshold: -55
+    severity: Medium
+    anomaly_name: Radio Noise Anomaly
 
-  sinr: 0
+  missing_pci:
+    enabled: true
+    severity: Critical
+    anomaly_name: LTE Configuration Anomaly
 
-window_size: 3
+  missing_cellid:
+    enabled: true
+    severity: Critical
+    anomaly_name: Cell Identification Anomaly
 
-output:
+  missing_band:
+    enabled: true
+    severity: Low
+    anomaly_name: Band Configuration Anomaly
 
-  anomaly_name: persistent_poor_signal
-
-severity: High
+  invalid_network_mode:
+    enabled: true
+    allowed:
+      - LTE
+      - NR
+    severity: Low
+    anomaly_name: Network Mode Anomaly

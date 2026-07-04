@@ -1,28 +1,29 @@
-from src.utils.config_loader import ConfigLoader
-from src.utils.data_loader import DataLoader
-from src.core.rule_engine import RuleEngine
+import yaml
+import pandas as pd
+
+from anomaly_detector import AnomalyDetector
 
 
-def main():
+with open("config.yaml") as f:
 
-    config = ConfigLoader("config/config.yaml").load()
+    config = yaml.safe_load(f)
 
-    df = DataLoader(config["input_file"]).load()
+detector = AnomalyDetector(config)
 
-    engine = RuleEngine(config)
+df = pd.read_csv(config["input_file"])
 
-    result = engine.run(df)
+results = df.apply(detector.detect, axis=1)
 
-    result.to_csv(config["output_file"], index=False)
-
-    print(result[[
-        "DEVICE_ID",
+df[
+    [
         "Anomaly",
         "Severity",
-        "Rule Triggered",
+        "Rule",
         "Reason"
-    ]].head(20))
+    ]
+] = pd.DataFrame(results.tolist(), index=df.index)
 
+df.to_csv(config["output_file"], index=False)
 
-if __name__ == "__main__":
-    main()
+print("✅ Analysis Complete")
+print(f"Output saved to {config['output_file']}")
