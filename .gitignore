@@ -1,1 +1,6 @@
-Telemetry_X_ATP_last7days_20260622.csv
+# Ignore datasets
+data/input/*.csv
+data/input/*.csv.gz
+
+# Ignore outputs
+output/*.csv

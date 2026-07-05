@@ -1,54 +1,62 @@
-name: Telecom Persistent Signal Engine
+project_name: Persistent Signal Anomaly
 
-input_file: data/input/Telemetry_X_ATP_last7days_20260622.csv
+input:
+  file_path: data/input/Telemetry_X_ATP_last7days_20260622.csv.gz
+  compression: gzip
+  separator: "\t"
+  chunk_size: 100000
+  max_rows:
 
-output_file: output/anomaly_report.csv
+output:
+  file_path: output/anomaly_report.csv
+
+# The source file is tab-delimited and uses telecom column names.
+# These mappings keep the rule engine limited to Excel-style columns Q to U.
+monitored_columns:
+  Q: SINR
+  R: RSSI
+  S: RSRQ
+  T: SYS_SUB_MODE
+  U: TIMESTAMP
+
+normal_reason: All monitored signal parameters are within acceptable limits.
 
 rules:
-
-  weak_coverage:
+  persistent_radio_degradation:
+    id: RULE-001
     enabled: true
-    threshold: -110
+    anomaly_name: Persistent Poor Signal
     severity: High
-    anomaly_name: Weak Coverage Anomaly
+    sinr_max: 0
+    rssi_min: -65
+    rsrq_max: -12
 
-  radio_interference:
+  severe_interference:
+    id: RULE-002
     enabled: true
-    threshold: 0
+    anomaly_name: Sustained Radio Interference
     severity: High
-    anomaly_name: Radio Interference Anomaly
+    sinr_max: 0
+    rsrq_max: -10
+
+  excessive_noise:
+    id: RULE-003
+    enabled: true
+    anomaly_name: Excessive Radio Noise
+    severity: Medium
+    rssi_min: -60
+    sinr_max: 3
 
   poor_signal_quality:
+    id: RULE-004
     enabled: true
-    threshold: -15
+    anomaly_name: Poor Signal Quality
     severity: Medium
-    anomaly_name: Poor Signal Quality Anomaly
+    rsrq_max: -14
+    sinr_max: 8
 
-  radio_noise:
+  invalid_measurement:
+    id: RULE-005
     enabled: true
-    threshold: -55
-    severity: Medium
-    anomaly_name: Radio Noise Anomaly
-
-  missing_pci:
-    enabled: true
-    severity: Critical
-    anomaly_name: LTE Configuration Anomaly
-
-  missing_cellid:
-    enabled: true
-    severity: Critical
-    anomaly_name: Cell Identification Anomaly
-
-  missing_band:
-    enabled: true
+    anomaly_name: Invalid Signal Measurement
     severity: Low
-    anomaly_name: Band Configuration Anomaly
-
-  invalid_network_mode:
-    enabled: true
-    allowed:
-      - LTE
-      - NR
-    severity: Low
-    anomaly_name: Network Mode Anomaly
